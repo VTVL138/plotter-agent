@@ -25,6 +25,7 @@ class CustomFile(BaseModel):
 class DataFrameReader(BaseModel):
     # dataframes: List[pd.DataFrame]
     dataframe: pd.DataFrame = None
+    text: str = None
 
     class Config:
         arbitrary_types_allowed = True

@@ -1,4 +1,4 @@
-from fastapi import FastAPI, UploadFile
+from fastapi import FastAPI, UploadFile, HTTPException
 
 import logging
 import sys
@@ -20,9 +20,13 @@ async def root():
 
 @app.post("/plot_from_file/")
 async def plot_from_file(file: UploadFile):
+
     my_file = CustomFile.load_from_file(file)
-    print(my_file.extension)
-    df = DataFrameReader.load_dataframe(my_file)
+    if my_file.extension in ["csv","xls","xlsx"]:
+        df = DataFrameReader.load_dataframe(my_file)
+    else:
+        logger.error(f"Unsupported file extension: {my_file.extension}")    
+        raise HTTPException(500,{"message": f"Unsupported file extension: {my_file.extension}"})
     print(df)
     return {"message": file.filename}
 
