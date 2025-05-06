@@ -23,6 +23,6 @@ async def plot_from_file(file: UploadFile):
     my_file = CustomFile().load_from_file(file)
     print("____",my_file.extension)
     df = DataFrameReader().load_dataframe(my_file)
-    print("df:___",df)0
+    print("df:___",df)
     return {"message": file.filename}
 
