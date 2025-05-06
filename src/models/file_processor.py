@@ -13,7 +13,8 @@ class CustomFile(BaseModel):
     extension: str = None
     content: SpooledTemporaryFile = None
 
-    def load_from_file(self, file:UploadFile):
+    @staticmethod
+    def load_from_file(file:UploadFile):
         return CustomFile(extension=get_extension_from_filename(filename=file.filename),
                           content=file.file)
 
@@ -28,7 +29,13 @@ class DataFrameReader(BaseModel):
     class Config:
         arbitrary_types_allowed = True
     
-    def load_dataframe(self, my_file: CustomFile):
+    @staticmethod
+    def load_dataframe(my_file: CustomFile):
         match my_file.extension:
             case "csv":
                 return DataFrameReader(dataframe=pd.read_csv(my_file.content))
+            case "xls":
+                return DataFrameReader(dataframe=pd.read_excel(my_file.content))
+            case "xlsx":
+                return DataFrameReader(dataframe=pd.read_excel(my_file.content))
+            

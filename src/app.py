@@ -20,9 +20,9 @@ async def root():
 
 @app.post("/plot_from_file/")
 async def plot_from_file(file: UploadFile):
-    my_file = CustomFile().load_from_file(file)
-    print("____",my_file.extension)
-    df = DataFrameReader().load_dataframe(my_file)
-    print("df:___",df)
+    my_file = CustomFile.load_from_file(file)
+    print(my_file.extension)
+    df = DataFrameReader.load_dataframe(my_file)
+    print(df)
     return {"message": file.filename}
 
