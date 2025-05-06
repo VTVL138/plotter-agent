@@ -34,9 +34,12 @@ class DataFrameReader(BaseModel):
     def load_dataframe(my_file: CustomFile):
         match my_file.extension:
             case "csv":
-                return DataFrameReader(dataframe=pd.read_csv(my_file.content))
+                df = pd.read_csv(my_file.content)
+                return DataFrameReader(dataframe=df,text=str(df))
             case "xls":
-                return DataFrameReader(dataframe=pd.read_excel(my_file.content))
+                df = pd.read_excel(my_file.content)
+                return DataFrameReader(dataframe=df,text=str(df))
             case "xlsx":
-                return DataFrameReader(dataframe=pd.read_excel(my_file.content))
+                df = pd.read_excel(my_file.content)
+                return DataFrameReader(dataframe=df,text=str(df))
             

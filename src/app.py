@@ -23,10 +23,12 @@ async def plot_from_file(file: UploadFile):
 
     my_file = CustomFile.load_from_file(file)
     if my_file.extension in ["csv","xls","xlsx"]:
-        df = DataFrameReader.load_dataframe(my_file)
+        my_dataframe = DataFrameReader.load_dataframe(my_file)
+        print(my_dataframe.text)
     else:
         logger.error(f"Unsupported file extension: {my_file.extension}")    
         raise HTTPException(500,{"message": f"Unsupported file extension: {my_file.extension}"})
-    print(df)
+    
+
     return {"message": file.filename}
 
