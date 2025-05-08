@@ -5,6 +5,8 @@ import sys
 import pandas as pd
 
 from models.file_processor import DataFrameReader, CustomFile
+from models.plotting_agent import PlotterAgent
+
 from models import config
 
 
@@ -29,6 +31,8 @@ async def plot_from_file(file: UploadFile):
         logger.error(f"Unsupported file extension: {my_file.extension}")    
         raise HTTPException(500,{"message": f"Unsupported file extension: {my_file.extension}"})
     
+    my_agent = PlotterAgent()
+    result = my_agent.run_agent('Generate code to check whether number is palindrome and test.')
 
-    return {"message": file.filename}
+    return {"message": result}
 
