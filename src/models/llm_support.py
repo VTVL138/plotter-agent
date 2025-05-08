@@ -52,7 +52,6 @@ class CustomLLM(LLM):
     def _call(
         self,
         prompt: str,
-        # generate_code: bool = True,
         stop: Optional[List[str]] = None,
         run_manager: Optional[CallbackManagerForLLMRun] = None,
         **kwargs: Any,
@@ -75,11 +74,8 @@ class CustomLLM(LLM):
         """
         # if stop is not None:
         #     raise ValueError("stop kwargs are not permitted.")
-        return ChatWithOllama().call_LLM_python(prompt=prompt)
-        # if generate_code:
-        #     return ChatWithOllama().call_LLM_python(prompt=prompt)
-        # else:
-        #     return ChatWithOllama().call_LLM(prompt=prompt)
+        return ChatWithOllama().call_LLM(prompt=prompt)
+
 
 
     @property
