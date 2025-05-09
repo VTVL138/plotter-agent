@@ -39,7 +39,6 @@ class PlotterAgent(BaseModel):
             ast.parse(state["source_code"])
             globals = {"df_data":state["df"]}
             locals = {}
-            print("___exec code:",state["source_code"])
             exec(state["source_code"],globals=globals,locals=locals)
 
             return PlotterGraphState(original_instruction=state["original_instruction"],
