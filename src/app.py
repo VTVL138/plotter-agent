@@ -31,7 +31,6 @@ async def plot_from_file(file: UploadFile, plot_instructions: str):
         raise HTTPException(500,{"message": f"Unsupported file extension: {my_file.extension}"})
     plotting_prompt = parse_plot_prompt(config["plotting_base_prompt"],str(my_dataframe.dataframe.head()),plot_instructions)
 
-    print("______plot:",plotting_prompt)
     my_agent = PlotterAgent().create_agent()
     s = PlotterGraphState(original_instruction=plotting_prompt,
                           df=my_dataframe.dataframe,
@@ -42,8 +41,6 @@ async def plot_from_file(file: UploadFile, plot_instructions: str):
                           test_successful=False)
 
     result = my_agent.invoke(s,{"recursion_limit": 5})
-    # img_byte_arr = io.BytesIO()
-    # result["return_img"].save(img_byte_arr, format='PNG')
-    print("_______return_image:",type(result["return_img"]))
+
     return StreamingResponse(result["return_img"], media_type="image/jpeg")
 

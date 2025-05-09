@@ -18,7 +18,6 @@ class ChatWithOllama(BaseModel):
 
 
     def call_LLM(self,prompt:str) -> str:
-        print("___call_baseLLM:",prompt)
         response: ChatResponse = chat(model='codellama',
                                       messages=[{'role': 'system','content': config["base_model_instruction"]},
                                                 {'role': 'user','content': prompt}])
@@ -26,7 +25,6 @@ class ChatWithOllama(BaseModel):
 
 
     def call_LLM_python(self,prompt:str) -> str:
-        print("___call_codeLLM:",prompt)
         response: ChatResponse = chat(model='codellama',
                                       messages=[{'role': 'system','content': config["coding_model_instruction"]},
                                                 {'role': 'user','content': prompt}])
