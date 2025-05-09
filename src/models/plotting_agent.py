@@ -4,7 +4,8 @@ from pydantic import BaseModel
 from typing import TypedDict
 from langgraph.graph import StateGraph, END, START
 from typing import Any, Dict, Iterator, List, Mapping, Optional
-
+import pandas as pd
+from PIL import Image
 import ast
 
 
@@ -12,11 +13,13 @@ import logging
 logger = logging.getLogger(__name__)
 
 class PlotterGraphState(TypedDict):
-  original_instruction: str
-  source_code: str
-  chat_history: List[str]
-  last_error_msg: str
-  test_successful: bool
+    original_instruction: str
+    df: pd.DataFrame
+    source_code: str
+    chat_history: List[str]
+    last_error_msg: str
+    return_img: Optional[bytes]
+    test_successful: bool
 
 class PlotterAgent(BaseModel):
 
@@ -24,23 +27,32 @@ class PlotterAgent(BaseModel):
     def generate_source_code(self, state: PlotterGraphState) -> PlotterGraphState:
         code_str = ChatWithOllama().call_LLM_python(state["original_instruction"])
         return PlotterGraphState(original_instruction=state["original_instruction"],
+                                 df=state["df"],
                                 source_code=code_str,
                                 chat_history=state["chat_history"] + [code_str],
                                 last_error_msg=state["last_error_msg"],
+                                return_img=state["return_img"],
                                 test_successful=state["test_successful"])
 
     def check_source_syntax(self, state: PlotterGraphState) -> PlotterGraphState:
         try:
             ast.parse(state["source_code"])
+            globals = {"df_data":state["df"]}
+            locals = {}
+            print("___exec code:",state["source_code"])
+            exec(state["source_code"],globals=globals,locals=locals)
 
             return PlotterGraphState(original_instruction=state["original_instruction"],
+                                     df=state["df"],
                                     source_code=state["source_code"],
                                     chat_history=state["chat_history"],
                                     last_error_msg=state["last_error_msg"],
+                                    return_img=locals["image_bytes"],
                                     test_successful=True)
         except Exception as e:
             logger.debug(f"Checking source code, error: {repr(e)}")
             return PlotterGraphState(original_instruction=state["original_instruction"],
+                                     df=state["df"],
                                     source_code=state["source_code"],
                                     chat_history=state["chat_history"],
                                     last_error_msg=str(repr(e)),
@@ -54,9 +66,11 @@ class PlotterAgent(BaseModel):
         
         
         return PlotterGraphState(original_instruction=state["original_instruction"],
+                                 df=state["df"],
                                     source_code=new_code_str,
                                     chat_history=state["chat_history"] + [new_code_str],
                                     last_error_msg=state["last_error_msg"],
+                                    return_img=state["return_img"],
                                     test_successful=state["test_successful"])
 
 
